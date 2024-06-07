@@ -25,6 +25,13 @@
 
 #import "XLFormRowNavigationAccessoryView.h"
 
+@interface XLFormRowNavigationAccessoryView ()
+
+@property (nonatomic) UIBarButtonItem *fixedSpace;
+@property (nonatomic) UIBarButtonItem *flexibleSpace;
+
+@end
+
 @implementation XLFormRowNavigationAccessoryView
 
 @synthesize previousButton = _previousButton;
