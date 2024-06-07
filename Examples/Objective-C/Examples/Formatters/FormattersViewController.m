@@ -21,7 +21,7 @@
 //     http://stackoverflow.com/questions/12580162/nsstring-to-nsdate-conversion-issue
 @interface CurrencyFormatter : NSNumberFormatter
 
-@property (readonly) NSDecimalNumberHandler *roundingBehavior;
+@property (readonly, strong) NSDecimalNumberHandler *roundingBehavior;
 
 @end
 
@@ -103,6 +103,11 @@
     row.valueFormatter = acctFormatter;
     row.value = @(0.75);
     [row.cellConfigAtConfigure setObject:@(NSTextAlignmentRight) forKey:@"textField.textAlignment"];
+    [section addFormRow:row];
+    
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"megabytes" rowType:XLFormRowDescriptorTypeInfo title:@"Megabytes"];
+    row.valueFormatter = [NSByteCountFormatter new];
+    row.value = @(1024);
     [section addFormRow:row];
     
     section = [XLFormSectionDescriptor formSection];

@@ -1,7 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-### Latest:
+### Version 4.3.0:
+* Add datePicker style property to XLFormDateCell (#1078)
+
+### Version 4.2.0:
+* Support for Swift Package Manager (#1073)
+* Fix Carthage build (#1075)
+
+### Version 4.1.0:
+* Fix crash when .Nib is inside a framework bundle. (#1050)
+* iOS 13 dark mode support. (#1057)
+* Updates for Swift 5 in Examples
+
+### Version 4.0.1:
+* Memory improvements and fixes.
+* Other minor fixes
+
+### Version 4.0.0:
+* Adds support for Xcode 9.
+* Deprecated UIAlertView, UIActionSheet, UIPopoverController.
+* Bumped minimum iOS version to 9.0.
+
+### Version 3.3.0:
+* Added `cellConfigForSelector` to style XLFormOptionsViewController
+* Added properties to **limit number of characters** in `XLFormTextFieldCell` and `XLFormTextViewCell`
+* Minor fixes
+
+### Version 3.2.0:
 * Added XL_APP_EXTENSIONS macro to allow app extensions (@MuscleRumble #357)
 * Added shouldChangeTextInRange delegate call for UITextView. (@kiancheong #782)
 * Added support for NSFormatter (@ziogaschr, @fwhenin, @bhirt-bpl #306)
@@ -127,6 +153,6 @@ All notable changes to this project will be documented in this file.
 * Added a convenience method to deselect a `XLFormRowDescriptor`. `-(void)deselectFormRow:(XLFormRowDescriptor *)row;`. [#33](https://github.com/xmartlabs/XLForm/issues/33 "#33").
 
 
-### Version 1.0.0 
+### Version 1.0.0
 
 * Initial release
