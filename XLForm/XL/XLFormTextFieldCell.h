@@ -38,7 +38,10 @@ extern NSString *const XLFormTextFieldMaxNumberOfCharacters;
 @property (nonatomic, copy) NSNumber *textFieldMaxNumberOfCharacters;
 
 /// Parses numeric input from a Number or Decimal row, accepting both "." and "," as the
-/// decimal separator regardless of the device locale.
+/// decimal separator regardless of the device locale. Returns NaN unless the whole string is a number.
 + (NSDecimalNumber *)decimalNumberFromInput:(NSString *)text;
+
+/// Same as `decimalNumberFromInput:`, also accepting `locale`'s decimal separator.
++ (NSDecimalNumber *)decimalNumberFromInput:(NSString *)text locale:(NSLocale *)locale;
 
 @end

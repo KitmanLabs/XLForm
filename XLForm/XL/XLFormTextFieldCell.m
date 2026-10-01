@@ -341,16 +341,44 @@ NSString *const XLFormTextFieldMaxNumberOfCharacters = @"textFieldMaxNumberOfCha
 
 + (NSDecimalNumber *)decimalNumberFromInput:(NSString *)text
 {
+    return [self decimalNumberFromInput:text locale:NSLocale.currentLocale];
+}
+
++ (NSDecimalNumber *)decimalNumberFromInput:(NSString *)text locale:(NSLocale *)locale
+{
+    static NSLocale *posixLocale;
+    static NSCharacterSet *asciiDigits;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        posixLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        // Not decimalDigitCharacterSet, which also matches non-ASCII digits.
+        asciiDigits = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    });
+
     // Parsing with the current locale silently truncates at a separator the locale doesn't use
     // (e.g. "33.45" becomes 33 on a device whose region uses ","). Accept both "." and ","
     // as the decimal separator and parse with a fixed locale instead.
     NSString *normalized = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *localeSeparator = [NSLocale.currentLocale objectForKey:NSLocaleDecimalSeparator];
+    NSString *localeSeparator = [locale objectForKey:NSLocaleDecimalSeparator];
     if (localeSeparator.length > 0 && ![localeSeparator isEqualToString:@"."]) {
         normalized = [normalized stringByReplacingOccurrencesOfString:localeSeparator withString:@"."];
     }
     normalized = [normalized stringByReplacingOccurrencesOfString:@"," withString:@"."];
-    return [NSDecimalNumber decimalNumberWithString:normalized locale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+
+    // Require the whole string to be a number, so input like "12abc" or "33.45.6" becomes NaN
+    // (which validators reject) instead of silently saving its leading number. The digit check
+    // stops a lone "-" scanning as 0.
+    if ([normalized rangeOfCharacterFromSet:asciiDigits].location == NSNotFound) {
+        return NSDecimalNumber.notANumber;
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:normalized];
+    scanner.locale = posixLocale;
+    scanner.charactersToBeSkipped = nil;
+    NSDecimal decimal;
+    if (![scanner scanDecimal:&decimal] || !scanner.isAtEnd) {
+        return NSDecimalNumber.notANumber;
+    }
+    return [NSDecimalNumber decimalNumberWithDecimal:decimal];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField{
