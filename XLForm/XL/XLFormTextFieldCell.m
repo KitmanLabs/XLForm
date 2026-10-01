@@ -339,6 +339,20 @@ NSString *const XLFormTextFieldMaxNumberOfCharacters = @"textFieldMaxNumberOfCha
 
 #pragma mark - Helper
 
++ (NSDecimalNumber *)decimalNumberFromInput:(NSString *)text
+{
+    // Parsing with the current locale silently truncates at a separator the locale doesn't use
+    // (e.g. "33.45" becomes 33 on a device whose region uses ","). Accept both "." and ","
+    // as the decimal separator and parse with a fixed locale instead.
+    NSString *normalized = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *localeSeparator = [NSLocale.currentLocale objectForKey:NSLocaleDecimalSeparator];
+    if (localeSeparator.length > 0 && ![localeSeparator isEqualToString:@"."]) {
+        normalized = [normalized stringByReplacingOccurrencesOfString:localeSeparator withString:@"."];
+    }
+    normalized = [normalized stringByReplacingOccurrencesOfString:@"," withString:@"."];
+    return [NSDecimalNumber decimalNumberWithString:normalized locale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];
+}
+
 - (void)textFieldDidChange:(UITextField *)textField{
     if([self.textField.text length] > 0) {
         BOOL didUseFormatter = NO;
@@ -362,7 +376,7 @@ NSString *const XLFormTextFieldMaxNumberOfCharacters = @"textFieldMaxNumberOfCha
         if (!didUseFormatter)
         {
             if ([self.rowDescriptor.rowType isEqualToString:XLFormRowDescriptorTypeNumber] || [self.rowDescriptor.rowType isEqualToString:XLFormRowDescriptorTypeDecimal]){
-                self.rowDescriptor.value =  [NSDecimalNumber decimalNumberWithString:self.textField.text locale:NSLocale.currentLocale];
+                self.rowDescriptor.value = [XLFormTextFieldCell decimalNumberFromInput:self.textField.text];
             } else if ([self.rowDescriptor.rowType isEqualToString:XLFormRowDescriptorTypeInteger]){
                 self.rowDescriptor.value = @([self.textField.text integerValue]);
             } else {

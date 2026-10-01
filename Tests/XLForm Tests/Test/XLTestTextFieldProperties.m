@@ -47,6 +47,15 @@
     expect([textFieldDelegate textField:textFieldCell.textField shouldChangeCharactersInRange:range replacementString:@"12345678901"]).to.beFalsy();
 }
 
+- (void)testDecimalNumberFromInputAcceptsBothSeparators
+{
+    expect([XLFormTextFieldCell decimalNumberFromInput:@"33.45"]).to.equal([NSDecimalNumber decimalNumberWithString:@"33.45"]);
+    expect([XLFormTextFieldCell decimalNumberFromInput:@"33,45"]).to.equal([NSDecimalNumber decimalNumberWithString:@"33.45"]);
+    expect([XLFormTextFieldCell decimalNumberFromInput:@"-1.5"]).to.equal([NSDecimalNumber decimalNumberWithString:@"-1.5"]);
+    expect([XLFormTextFieldCell decimalNumberFromInput:@" 12 "]).to.equal([NSDecimalNumber decimalNumberWithString:@"12"]);
+    expect([XLFormTextFieldCell decimalNumberFromInput:@"abc"]).to.equal([NSDecimalNumber notANumber]);
+}
+
 #pragma mark - Build Form
 
 -(void)buildForm

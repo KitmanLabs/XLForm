@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+### Version 4.4.1:
+* Parse Number and Decimal row input independently of the device locale, accepting both "." and "," as the decimal separator (CP3-1965)
+
 ### Version 4.3.0:
 * Add datePicker style property to XLFormDateCell (#1078)
 
